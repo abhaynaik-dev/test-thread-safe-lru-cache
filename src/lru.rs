@@ -38,4 +38,12 @@ mod tests {
         assert_eq!(cache.get(&"k1"), Some("v1"));
         assert_eq!(cache.get(&"k2"), Some("v2"));
     }
+
+    #[test]
+    fn test_zero_capacity_cache() {
+        let cache = LruCache::new(0);
+        cache.put("k1", "v1");
+
+        assert_eq!(cache.get(&"k1"), None);
+    }
 }

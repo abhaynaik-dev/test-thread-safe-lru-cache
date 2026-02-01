@@ -35,6 +35,10 @@ impl<K: Eq + Hash + Clone, V: Clone> LruCacheData<K, V> {
     }
 
     pub fn put(&mut self, key: K, value: V) {
+        if self.capacity == 0 {
+            return;
+        }
+
         // Key is already present in the hash map
         if let Some(&index) = self.map.get(&key) {
             self.nodes[index].value = value;
