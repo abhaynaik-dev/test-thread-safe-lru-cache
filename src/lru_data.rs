@@ -62,6 +62,10 @@ impl<K: Eq + Hash + Clone, V: Clone> LruCacheData<K, V> {
         self.insert_at_front(index);
     }
 
+    pub fn len(&mut self) -> usize {
+        self.map.len()
+    }
+
     fn remove_lru_node(&mut self) {
         if let Some(lru_index) = self.tail {
             let key = self.nodes[lru_index].key.clone();
