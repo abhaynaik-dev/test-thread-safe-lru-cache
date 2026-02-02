@@ -18,7 +18,7 @@ impl<K: Eq + Hash + Clone, V: Clone> LruCache<K, V> {
         let mut guard = self
             .data
             .lock()
-            .expect("failed to acquire get LruCache lock");
+            .expect("failed to acquire LruCache lock in get");
         guard.get(key).cloned()
     }
 
@@ -26,15 +26,15 @@ impl<K: Eq + Hash + Clone, V: Clone> LruCache<K, V> {
         let mut guard = self
             .data
             .lock()
-            .expect("failed to acquire post LruCache lock");
+            .expect("failed to acquire LruCache lock in put");
         guard.put(key, value);
     }
 
     pub fn len(&self) -> usize {
-        let mut guard = self
+        let guard = self
             .data
             .lock()
-            .expect("failed to acquire get LruCache lock");
+            .expect("failed to acquire LruCache lock in get");
         guard.len()
     }
 

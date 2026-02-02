@@ -62,7 +62,7 @@ impl<K: Eq + Hash + Clone, V: Clone> LruCacheData<K, V> {
         self.insert_at_front(index);
     }
 
-    pub fn len(&mut self) -> usize {
+    pub fn len(&self) -> usize {
         self.map.len()
     }
 
