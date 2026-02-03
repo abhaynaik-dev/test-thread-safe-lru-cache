@@ -38,6 +38,8 @@ Nodes are not removed from the vector when evicted from the LRU. Instead, their 
 
 ## Synchronization Strategy
 
+### Sync Compatible Cache
+
 The public cache is protected by a single `std::sync::Mutex` guarding the internal `LruCacheData`.
 
 Both `get()` and `put()` acquire the lock.
@@ -63,6 +65,14 @@ Although `get()` appears to be a read operation, it mutates internal state by up
    - Insert node at front, MRU  
 
 Using a Mutex keeps the implementation simple and ensures correctness under contention.
+
+### Async Compatible Cache
+
+In addition to the synchronous cache, an async compatible version is added.
+
+The public cache is protected by a single `tokio::sync::Mutex` to guard the same internal `LruCacheData`.
+
+The internal data structure and eviction logic are identical to the synchronous version. The only difference is that the lock acquisition is performed by `.lock().await` instead of blocking the OS thread. This ensures that other async tasks can continue running while waiting for the lock.
 
 ## LRU Ordering Under Concurrency
 
@@ -114,7 +124,7 @@ This shows almost similar performance for both approaches.
 
 - The cache uses a single global lock. Under heavy concurrent write workloads, this lock can become a bottleneck.
 - Nodes are not reused inside the internal vector; memory usage remains bounded logically but indices may grow over time.
-- The implementation is synchronous only; an async-compatible version is not provided.
+- Only Least Recently Used (LRU) eviction is supported.
 
 ## Possible Future Improvements
 
